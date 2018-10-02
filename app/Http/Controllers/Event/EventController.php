@@ -145,11 +145,7 @@ class EventController extends Controller
      */
     public function getSelectedEvent($id) 
     {
-        $event = Event::findOrFail($id);
-
-        $event->checkBelongsToTheUserOrFail();
-
-        return $event;
+       return Event::findOrFail($id)->checkBelongsToTheUserOrFail();
     }
 
 }
