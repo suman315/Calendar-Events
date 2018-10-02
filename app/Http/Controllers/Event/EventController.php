@@ -19,8 +19,11 @@ class EventController extends Controller
     public $events;
 
     /**
-     *  Checks if the user is auth or not
+     * Instantiate a new controller instance.
+     *
+     * @return void
      */
+   
     public function __construct()
     {
         //please import the database form /database/test.sql first and login user as below
@@ -55,7 +58,7 @@ class EventController extends Controller
     /**
      * sets the events for current user
      *
-     * @return null
+     * @return void
      */
     public function setEvents()
     {
@@ -72,7 +75,7 @@ class EventController extends Controller
      */
     public function edit($id)
     {
-        $event = Event::findOrFail($id);
+        $event = $this->getSelectedEvent($id);
 
         return view('event.edit', [
             'event' => $event,
@@ -109,7 +112,7 @@ class EventController extends Controller
      */
     public function update($id, AddEventRequest $request)
     {
-        $event = Event::findOrFail($id);
+        $event = $this->getSelectedEvent($id);
 
         $event->update([
             'title'      => $request->title,
@@ -127,11 +130,26 @@ class EventController extends Controller
      */
     public function delete($id)
     {
-        $event = Event::findOrFail($id);
+        $event = $this->getSelectedEvent($id);
 
         $event->delete();
 
         return redirect()->back();
+    }
+
+    /**
+     * gets the selected event or fails
+     *
+     * @param int $id
+     * @return  Illuminate\Database\Eloquent\Collection
+     */
+    public function getSelectedEvent($id) 
+    {
+        $event = Event::findOrFail($id);
+
+        $event->checkBelongsToTheUserOrFail();
+
+        return $event;
     }
 
 }
