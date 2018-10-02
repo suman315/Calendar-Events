@@ -23,7 +23,7 @@ class EventController extends Controller
      *
      * @return void
      */
-   
+
     public function __construct()
     {
         //please import the database form /database/test.sql first and login user as below
@@ -75,10 +75,9 @@ class EventController extends Controller
      */
     public function edit($id)
     {
-        $event = $this->getSelectedEvent($id);
 
         return view('event.edit', [
-            'event' => $event,
+            'event' => $this->getSelectedEvent($id),
         ]);
     }
 
@@ -112,12 +111,11 @@ class EventController extends Controller
      */
     public function update($id, AddEventRequest $request)
     {
-        $event = $this->getSelectedEvent($id);
-
-        $event->update([
-            'title'      => $request->title,
-            'event_date' => $request->date,
-        ]);
+        $this->getSelectedEvent($id)
+            ->update([
+                'title'      => $request->title,
+                'event_date' => $request->date,
+            ]);
 
         return redirect()->route('event');
     }
@@ -130,9 +128,7 @@ class EventController extends Controller
      */
     public function delete($id)
     {
-        $event = $this->getSelectedEvent($id);
-
-        $event->delete();
+        $event = $this->getSelectedEvent($id)->delete();
 
         return redirect()->back();
     }
@@ -143,9 +139,9 @@ class EventController extends Controller
      * @param int $id
      * @return  Illuminate\Database\Eloquent\Collection
      */
-    public function getSelectedEvent($id) 
+    public function getSelectedEvent($id)
     {
-       return Event::findOrFail($id)->checkBelongsToTheUserOrFail();
+        return Event::findOrFail($id)->checkBelongsToTheUserOrFail();
     }
 
 }
